@@ -1,7 +1,8 @@
 le-store-certbot
 ================
 
-The "certbot" storage strategy for node-letsencrypt.
+The "certbot" storage strategy for
+[Greenlock.js](https://git.coolaj86.com/coolaj86/le-store-certbot.js).
 
 This le storage strategy aims to maintain compatibility with the
 configuration files and file structure of the official certbot client.
@@ -17,24 +18,28 @@ npm install --save le-store-certbot@2.x
 
 ```bash
 var leStore = require('le-store-certbot').create({
-  configDir: require('homedir')() + '/letsencrypt/etc'          // or /etc/letsencrypt or wherever
+  configDir: require('homedir')() + '/acme/etc'          // or /etc/acme or wherever
 , privkeyPath: ':configDir/live/:hostname/privkey.pem'          //
 , fullchainPath: ':configDir/live/:hostname/fullchain.pem'      // Note: both that :configDir and :hostname
 , certPath: ':configDir/live/:hostname/cert.pem'                //       will be templated as expected by
-, chainPath: ':configDir/live/:hostname/chain.pem'              //       node-letsencrypt
+, chainPath: ':configDir/live/:hostname/chain.pem'              //       greenlock.js
 
-, workDir: require('homedir')() + '/letsencrypt/var/lib'
-, logsDir: require('homedir')() + '/letsencrypt/var/log'
+, workDir: require('homedir')() + '/acme/var/lib'
+, logsDir: require('homedir')() + '/acme/var/log'
 
-, webrootPath: '~/letsencrypt/srv/www/:hostname/.well-known/acme-challenge'
+, webrootPath: '~/acme/srv/www/:hostname/.well-known/acme-challenge'
 
 , debug: false
 });
+```
 
-var LE = require('letsencrypt');
+The store module can be used globally with Greenlock like this:
 
-LE.create({
-  server: LE.stagingServerUrl                               // Change to LE.productionServerUrl in production
+```
+var Greenlock = require('greenlock');
+
+Greenlock.create({
+  ...
 , store: leStore
 });
 ```
@@ -43,7 +48,7 @@ Example File Structure
 ----------------------
 
 ```
-~/letsencrypt/
+~/acme/
 └── etc
     ├── accounts
     │   └── acme-staging.api.letsencrypt.org
@@ -53,19 +58,19 @@ Example File Structure
     │               ├── private_key.json
     │               └── regr.json
     ├── archive
-    │   └── example.daplie.me
+    │   └── example.com
     │       ├── cert0.pem
     │       ├── chain0.pem
     │       ├── fullchain0.pem
     │       └── privkey0.pem
     ├── live
-    │   └── example.daplie.me
+    │   └── example.com
     │       ├── cert.pem
     │       ├── chain.pem
     │       ├── fullchain.pem
     │       ├── privkey.pem
     │       └── privkey.pem.bak
     └── renewal
-        ├── example.daplie.me.conf
-        └── example.daplie.me.conf.bak
+        ├── example.com.conf
+        └── example.com.conf.bak
 ```

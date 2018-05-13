@@ -1,14 +1,14 @@
 {
   "name": "le-store-certbot",
-  "version": "2.0.5",
-  "description": "The \"certbot\" storage strategy for node-letsencrypt",
+  "version": "2.1.0",
+  "description": "The \"certbot\" storage strategy for Greenlock.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Daplie/le-store-certbot.git"
+    "url": "https://git.coolaj86.com/coolaj86/le-store-certbot.js"
   },
   "keywords": [
     "le-store",
@@ -20,11 +20,12 @@
   "author": "AJ ONeal <coolaj86@gmail.com> (https://coolaj86.com/)",
   "license": "(MIT OR Apache-2.0)",
   "bugs": {
-    "url": "https://github.com/Daplie/le-store-certbot/issues"
+    "url": "https://git.coolaj86.com/coolaj86/le-store-certbot.js/issues"
   },
-  "homepage": "https://github.com/Daplie/le-store-certbot#readme",
+  "homepage": "https://git.coolaj86.com/coolaj86/le-store-certbot.js",
   "dependencies": {
-    "bluebird": "^3.4.1",
+    "bluebird": "^3.5.1",
+    "fs-symlink": "^1.2.1",
     "mkdirp": "^0.5.1",
     "pyconf": "^1.1.2",
     "safe-replace": "^1.0.2"
