@@ -102,9 +102,9 @@ function pyToJson(pyobj) {
 }
 
 var defaults = {
-  configDir: [ os.homedir(), 'letsencrypt', 'etc' ].join(path.sep)                     // /etc/letsencrypt/
-, logsDir: [ os.homedir(), 'letsencrypt', 'var', 'log' ].join(path.sep)                // /var/log/letsencrypt/
-, workDir: [ os.homedir(), 'letsencrypt', 'var', 'lib' ].join(path.sep)                // /var/lib/letsencrypt/
+  configDir: [ os.homedir(), 'letsencrypt', 'etc' ].join(path.sep)            // /etc/letsencrypt/
+, logsDir: [ os.homedir(), 'tmp', 'acme', 'log' ].join(path.sep)              // /var/log/letsencrypt/
+, workDir: [ os.homedir(), 'tmp', 'acme', 'lib' ].join(path.sep)              // /var/lib/letsencrypt/
 
 , accountsDir: [ ':configDir', 'accounts', ':serverDir' ].join(path.sep)
 , renewalPath: [ ':configDir', 'renewal', ':hostname.conf' ].join(path.sep)
