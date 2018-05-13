@@ -104,7 +104,7 @@ function pyToJson(pyobj) {
 var defaults = {
   configDir: [ os.homedir(), 'letsencrypt', 'etc' ].join(path.sep)            // /etc/letsencrypt/
 , logsDir: [ os.homedir(), 'tmp', 'acme', 'log' ].join(path.sep)              // /var/log/letsencrypt/
-, workDir: [ os.homedir(), 'tmp', 'acme', 'lib' ].join(path.sep)              // /var/lib/letsencrypt/
+, webrootPath: [ os.homedir(), 'tmp', 'acme-challenge' ].join(path.sep)
 
 , accountsDir: [ ':configDir', 'accounts', ':serverDir' ].join(path.sep)
 , renewalPath: [ ':configDir', 'renewal', ':hostname.conf' ].join(path.sep)
@@ -119,7 +119,6 @@ var defaults = {
 , chainPath: [ ':configDir', 'live', ':hostname', 'chain.pem' ].join(path.sep)
 
 , rsaKeySize: 2048
-, webrootPath: [ ':workDir', 'acme-challenge' ].join(path.sep)
 };
 
 module.exports.create = function (configs) {
