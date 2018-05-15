@@ -486,6 +486,14 @@ module.exports.create = function (configs) {
                                       '/acme/reg/' + accountId);
 
         return mkdirpAsync(accountDir).then(function () {
+          var regrBody = {
+            body: reg.receipt,
+            uri: uri,
+          };
+
+          if (typeof reg.newAuthzUrl !== 'undefined') {
+            regrBody.new_authzr_uri = reg.newAuthzUrl;
+          }
 
           // TODO abstract file writing
           return PromiseA.all([
@@ -503,7 +511,7 @@ module.exports.create = function (configs) {
               terms_of_service: 'https://letsencrypt.org/documents/LE-SA-v1.0.1-July-27-2015.pdf' }
              */
           , fs.writeFileAsync(path.join(accountDir, 'regr.json'),
-                              JSON.stringify({ body: reg.receipt, uri: uri }),
+                              JSON.stringify(regrBody),
                               'utf8')
           ]);
         }).then(function () {
