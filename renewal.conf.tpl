@@ -78,6 +78,6 @@ tls_sni_01_port = 443
 logs_dir = :logs_dir
 apache_vhost_root = /etc/apache2/sites-available
 configurator = None
-must_staple = True
+must_staple = False
 [[webroot_map]]
 # :hostname = :webroot_path
