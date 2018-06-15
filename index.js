@@ -101,10 +101,12 @@ function pyToJson(pyobj) {
   return jsobj;
 }
 
+var crypto = require('crypto');
+var rnd = crypto.randomBytes(8).toString('hex');
 var defaults = {
   configDir: [ os.homedir(), 'letsencrypt', 'etc' ].join(path.sep)            // /etc/letsencrypt/
-, logsDir: [ os.homedir(), 'tmp', 'acme', 'log' ].join(path.sep)              // /var/log/letsencrypt/
-, webrootPath: [ os.homedir(), 'tmp', 'acme-challenge' ].join(path.sep)
+, logsDir: [ os.tmpdir(), 'acme-' + rnd, 'log' ].join(path.sep)              // /var/log/letsencrypt/
+, webrootPath: [ os.tmpdir(), 'acme-' + rnd, 'acme-challenge' ].join(path.sep)
 
 , accountsDir: [ ':configDir', 'accounts', ':serverDir' ].join(path.sep)
 , renewalPath: [ ':configDir', 'renewal', ':hostname.conf' ].join(path.sep)
@@ -373,8 +375,8 @@ module.exports.create = function (configs) {
       // Accounts
     , _getAccountIdByPublicKey: function (keypair) {
         // we use insecure md5 - even though we know it's bad - because that's how the python client did
-        const pubkey = keypair.publicKeyPem.replace(/\r/g, '');
-        return require('crypto').createHash('md5').update(pubkey).digest('hex');
+        var pubkey = keypair.publicKeyPem.replace(/\r/g, '');
+        return crypto.createHash('md5').update(pubkey).digest('hex');
       }
       // Accounts
     , checkKeypairAsync: function (args) {
