@@ -11,7 +11,7 @@ var util = require('util');
 function promisifyAll(obj) {
   var aobj = {};
   Object.keys(obj).forEach(function (key) {
-    aobj[key] = util.promisify(obj[key]);
+    aobj[key + 'Async'] = util.promisify(obj[key]);
   });
   return aobj;
 }
