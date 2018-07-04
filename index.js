@@ -278,7 +278,7 @@ module.exports.create = function (configs) {
             return PromiseA.all([
               sfs.writeFileAsync(certArchive, pems.cert, 'ascii')
             , sfs.writeFileAsync(chainArchive, pems.chain, 'ascii')
-            , sfs.writeFileAsync(fullchainArchive, pems.cert + pems.chain, 'ascii')
+            , sfs.writeFileAsync(fullchainArchive, [ pems.cert, pems.chain ].join('\n'), 'ascii')
             , sfs.writeFileAsync(privkeyArchive, pems.privkey, 'ascii')
             ]);
           }).then(function () {
