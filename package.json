@@ -1,6 +1,6 @@
 {
   "name": "le-store-certbot",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "The \"certbot\" storage strategy for Greenlock.js",
   "main": "index.js",
   "scripts": {
