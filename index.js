@@ -1,9 +1,25 @@
 'use strict';
+/* global Promise */
 
-var PromiseA = require('bluebird');
-var mkdirpAsync = PromiseA.promisify(require('mkdirp'));
+var PromiseA;
+try {
+  PromiseA = require('bluebird');
+} catch(e) {
+  PromiseA = Promise;
+}
+var util = require('util');
+function promisifyAll(obj) {
+  var aobj = {};
+  Object.keys(obj).forEach(function (key) {
+    aobj[key] = util.promisify(obj[key]);
+  });
+  return aobj;
+}
+var mkdirpAsync = util.promisify(require('mkdirp'));
 var path = require('path');
-var fs = PromiseA.promisifyAll(require('fs'));
+var fs = require('fs');
+var readFileAsync = util.promisify(fs.readFile);
+var readdirAsync = util.promisify(fs.readdir);
 var sfs = require('safe-replace');
 var os = require('os');
 var symlink = require('fs-symlink');
@@ -21,7 +37,7 @@ function writeRenewalConfig(args) {
   var pyobj = args.pyobj;
   pyobj.checkpoints = parseInt(pyobj.checkpoints, 10) || 0;
 
-  var pyconf = PromiseA.promisifyAll(require('pyconf'));
+  var pyconf = promisifyAll(require('pyconf'));
 
   var liveDir = args.liveDir || path.join(args.configDir, 'live', args.domains[0]);
 
@@ -151,7 +167,7 @@ module.exports.create = function (configs) {
         if (!keypath) {
           return null;
         }
-        return fs.readFileAsync(keypath, 'ascii').then(function (key) {
+        return readFileAsync(keypath, 'ascii').then(function (key) {
           if ('jwk' === format) {
             return { privateKeyJwk: JSON.parse(key) };
           }
@@ -206,12 +222,12 @@ module.exports.create = function (configs) {
           return PromiseA.reject(new Error("missing one or more of privkeyPath, fullchainPath, certPath, chainPath from options"));
         }
 
-        //, fs.readFileAsync(fullchainPath, 'ascii')
+        //, readFileAsync(fullchainPath, 'ascii')
         // note: if this ^^ gets added back in, the arrays below must change
         return PromiseA.all([
-          fs.readFileAsync(args.privkeyPath, 'ascii')   // 0
-        , fs.readFileAsync(args.certPath, 'ascii')      // 1
-        , fs.readFileAsync(args.chainPath, 'ascii')     // 2
+          readFileAsync(args.privkeyPath, 'ascii')   // 0
+        , readFileAsync(args.certPath, 'ascii')      // 1
+        , readFileAsync(args.chainPath, 'ascii')     // 2
 
           // stat the file, not the link
         , fs.statAsync(args.certPath)                   // 3
@@ -330,11 +346,11 @@ module.exports.create = function (configs) {
           log(args.debug, "No email given");
           return PromiseA.resolve(null);
         }
-        return fs.readdirAsync(args.accountsDir).then(function (nodes) {
+        return readdirAsync(args.accountsDir).then(function (nodes) {
           log(args.debug, "success reading arg.accountsDir");
 
           return PromiseA.all(nodes.map(function (node) {
-            return fs.readFileAsync(path.join(args.accountsDir, node, 'regr.json'), 'utf8').then(function (text) {
+            return readFileAsync(path.join(args.accountsDir, node, 'regr.json'), 'utf8').then(function (text) {
               var regr = JSON.parse(text);
               regr.__accountId = node;
 
@@ -432,7 +448,7 @@ module.exports.create = function (configs) {
           return PromiseA.all(configs.map(function (filename) {
             var keyname = filename.slice(0, -5);
 
-            return fs.readFileAsync(path.join(accountDir, filename), 'utf8').then(function (text) {
+            return readFileAsync(path.join(accountDir, filename), 'utf8').then(function (text) {
               var data;
 
               try {
@@ -528,7 +544,7 @@ module.exports.create = function (configs) {
       }
       // Accounts
     , getAccountIdAsync: function (args) {
-        var pyconf = PromiseA.promisifyAll(require('pyconf'));
+        var pyconf = promisifyAll(require('pyconf'));
 
         return pyconf.readFileAsync(args.renewalPath).then(function (renewal) {
           var accountId = renewal.account;
@@ -564,7 +580,7 @@ module.exports.create = function (configs) {
       }
       // Configs
     , _checkHelperAsync: function (args) {
-        var pyconf = PromiseA.promisifyAll(require('pyconf'));
+        var pyconf = promisifyAll(require('pyconf'));
 
         return pyconf.readFileAsync(args.renewalPath).then(function (pyobj) {
           return pyobj;
@@ -618,7 +634,7 @@ module.exports.create = function (configs) {
     , allAsync: function (copy) {
         copy.domains = [];
 
-        return fs.readdirAsync(copy.renewalDir).then(function (nodes) {
+        return readdirAsync(copy.renewalDir).then(function (nodes) {
           nodes = nodes.filter(function (node) {
             return /^[a-z0-9]+.*\.conf$/.test(node);
           });
